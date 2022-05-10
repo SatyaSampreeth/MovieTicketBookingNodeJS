@@ -35,6 +35,8 @@ const cinemaRouter = require('./routes/cinemas')
 app.use('/cinema',cinemaRouter)
 const showtimeRouter = require('./routes/showtimes');
 app.use('/showtime',showtimeRouter)
+const reservationRouter = require('./routes/reservations');
+app.use('/reservation',reservationRouter)
 
 // server listening 
 app.listen(9000,()=>{

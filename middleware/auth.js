@@ -2,20 +2,27 @@ const jwt = require("jsonwebtoken");
 const User = require("../model/user");
 
 const verifyToken = (req, res, next) => {
-  const token = req.headers["x-access-token"];
+  if(!req.headers.authorization){
+    return res.status(401).json('Unauthorized Request')
+  }
+  const token =  req.headers.authorization.split(' ')[1]
+  // req.headers["x-access-token"] || ;
 
   if (!token) {
-    return res.status(403).send("A token is required for authentication");
+    return res.status(401).json("A token is required for authentication");
   }
   try {
     const decoded = jwt.verify(token, 'satya');
-    req.user = decoded;
-    console.log(decoded.exp)
+    req.userId = decoded.id;
+    if(!decoded){
+      return res.status(401).json("A token is required for authentication");
+    }
+    console.log(decoded)
     // if (decoded.exp < Date.now().valueOf() / 1000) { 
     //   return res.status(401).json({ error: "JWT token has expired, please login to obtain a new one" });
     //  } 
   } catch (err) {
-    return res.status(401).send("Invalid Token");
+    return res.status(401).json("Invalid Token");
   }
   
   return next();
@@ -24,7 +31,10 @@ const verifyToken = (req, res, next) => {
 
 const enhance = async (req, res, next) => {
   try {
-    const token = req.headers["x-access-token"];
+    if(!req.headers.authorization){
+      return res.status(401).json('Unauthorized Request')
+    }
+    const token =  req.headers.authorization.split(' ')[1]
     const decoded = jwt.verify(token, 'satya');
     
     const user = await User.findOne({

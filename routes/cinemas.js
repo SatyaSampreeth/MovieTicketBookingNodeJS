@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router()
-const Location = require("../model/location");
-const Cinema = require("../model/cinema");
+const Showtime = require("../model/showtime");
 const auth = require("../middleware/auth");
+const Movie = require("../model/movie");
+const Cinema = require("../model/cinema");
+const Location = require("../model/location");
 
 // Creating a cinema
-router.post('/add', async (req, res) => {
+router.post('/add',auth.enhance ,async (req, res) => {
     const cinema = new Cinema(req.body);
     try {
       const oldCinema = await Cinema.findOne( req.body );
@@ -20,7 +22,7 @@ router.post('/add', async (req, res) => {
     }
   });
 
-  router.get('/all', async(req,res)=>{
+  router.get('/all',auth.enhance ,async(req,res)=>{
 
     try{
       const cinema = await Cinema.find();
@@ -43,11 +45,34 @@ router.post('/add', async (req, res) => {
     }
 })    
 
-router.get('/:city', async(req,res)=>{
+router.get('/:city',auth.verifyToken, async(req,res)=>{
 
   try{
     const cinema = await Cinema.find({city:req.params.city});
       res.json(cinema)
+  }
+  catch(err){
+      res.send('error'+err)
+  }
+})
+
+router.get('/:city/:title', auth.verifyToken,async(req,res)=>{
+
+  try{
+    const location = await Location.findOne({city:req.params.city})
+    const movie = await Movie.findOne({title:req.params.title})
+    const showtime = await Showtime.find({cityId:location.id,movieId:movie.id})
+    details=[]
+    for (let item of showtime){
+      const cinema = await Cinema.findById(item.cinemaId);
+      obj={
+        name:cinema.name,
+        id:item.cinemaId
+      }
+      details.push(obj)
+    }
+    
+    res.status(200).json(details);
   }
   catch(err){
       res.send('error'+err)

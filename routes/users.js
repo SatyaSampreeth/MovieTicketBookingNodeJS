@@ -8,7 +8,7 @@ require('../middleware/passport')
 const User = require("../model/user");
 const auth = require("../middleware/auth");
 
-router.get("/welcome", auth.enhance, (req, res) => {
+router.get("/welcome", auth.verifyToken, (req, res) => {
   res.status(200).send("Welcome 🙌 ");
 });
 
@@ -51,7 +51,7 @@ router.post("/register", async (req, res) => {
         { user_id: user._id, email },
         'satya',
         {
-          expiresIn: "2h",
+          expiresIn: "1h",
         }
       );
       // save user token
@@ -80,7 +80,7 @@ router.post("/login", async(req, res) => {
           // Create token
           const token = jwt.sign(
             { user_id: user._id, email },'satya',
-            {expiresIn: "2h",}
+            {expiresIn: "1h",}
           );
           // save user token
           user.token = token;
@@ -95,7 +95,7 @@ router.post("/login", async(req, res) => {
     });
 
 // Get all users
-router.get('/users', async(req,res)=>{
+router.get('/users', auth.enhance,async(req,res)=>{
 
         try{
             const users = await User.find()
@@ -108,7 +108,7 @@ router.get('/users', async(req,res)=>{
 
 
 // Get a particular user
-router.get('/:id', async(req,res)=>{
+router.get('/:id', auth.verifyToken,async(req,res)=>{
 
   try{
     const user = await User.findById(req.params.id)
@@ -120,7 +120,7 @@ router.get('/:id', async(req,res)=>{
 })    
 
 // Update a particular user
-router.put('/:id', async(req,res)=>{
+router.put('/:id', auth.enhance,async(req,res)=>{
 
   try{
     
@@ -135,7 +135,7 @@ router.put('/:id', async(req,res)=>{
 })   
 
 // Delete a user
-router.delete('/:id', async(req,res)=>{
+router.delete('/:id', auth.enhance,async(req,res)=>{
 
   try{
     

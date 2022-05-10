@@ -7,7 +7,7 @@ const Movie = require("../model/movie");
 const auth = require("../middleware/auth");
 
 // Creating a movie 
-router.post('/add', async (req, res) => {
+router.post('/add',auth.enhance, async (req, res) => {
     const movie = new Movie(req.body);
     try {
       const oldMovie = await Movie.findOne( req.body );
@@ -22,7 +22,7 @@ router.post('/add', async (req, res) => {
     }
   });
 
-  router.get('/all', async(req,res)=>{
+  router.get('/all', auth.enhance,async(req,res)=>{
 
     try{
       const movie = await Movie.find();
@@ -34,7 +34,7 @@ router.post('/add', async (req, res) => {
 })   
 
 //get movies based on location
-router.get('/:city', async(req,res)=>{
+router.get('/:city', auth.verifyToken,async(req,res)=>{
 
   try{
     const location = await Location.findOne({city:req.params.city})

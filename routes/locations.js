@@ -6,7 +6,7 @@ const Location = require("../model/location");
 const auth = require("../middleware/auth");
 
 // Creating a movie 
-router.post('/add', async (req, res) => {
+router.post('/add',auth.enhance, async (req, res) => {
     const location = new Location(req.body);
     try {
       const oldLocation = await Location.findOne( req.body );
@@ -22,7 +22,7 @@ router.post('/add', async (req, res) => {
     }
   });
 
-  router.get('/all', async(req,res)=>{
+  router.get('/all',auth.verifyToken,async(req,res)=>{
 
     try{
       const location = await Location.find();
