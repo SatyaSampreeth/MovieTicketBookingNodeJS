@@ -17,7 +17,11 @@ const cinemaSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'location',
     required: true
-  }
+  },
+  img:{
+    type:String,
+    required:true
+  },
   // seats: {
   //   type: [Schema.Types.Mixed],
   //   required: true,

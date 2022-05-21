@@ -16,6 +16,7 @@ con.on('open',()=>{
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors(coreOptions))
+app.use('/profle',express.static('upload/images'))
 
 const passport = require('passport')
 app.use(passport.initialize())

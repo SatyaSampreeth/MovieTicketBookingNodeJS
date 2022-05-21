@@ -38,4 +38,22 @@ const showtimeSchema = new mongoose.Schema({
   },
 });
 
+// showtimeSchema.pre('save',async function(next){
+//   const showtime=this;
+//   let total=0
+//   // if(showtime.isModified('seats')){
+//     for(let i in seats){
+//       for (let j in i){
+//         total+=1
+//       }
+//     }
+//       showtime.seatsAvailable=total
+//   // }
+  
+  
+//   next();
+//   }
+//   )
+  
+
 module.exports = mongoose.model('showtime', showtimeSchema);;

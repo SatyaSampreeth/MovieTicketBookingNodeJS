@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-
-const { Schema } = mongoose;
-const reservationSchema = new Schema({
+Schema = mongoose.Schema
+// const { Schema } = mongoose;
+const reservationSchema = new mongoose.Schema({
 //   date: {
 //     type: Date,
 //     required: true,
@@ -25,23 +25,24 @@ const reservationSchema = new Schema({
   },
   movieId: {
     type: Schema.Types.ObjectId,
-    ref: 'Movie',
+    ref: 'movie',
     required: true,
   },
   cinemaId: {
     type: Schema.Types.ObjectId,
-    ref: 'Cinema',
+    ref: 'cinema',
     required: true,
   },
   cityId:{
     type: Schema.Types.ObjectId,
-    ref: 'Location',
+    ref: 'location',
+    required: true
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'user',
     required: true,
-  }
-//   userid: {
-//     type: String,
-//     required: true,
-//   },
+  },
 //   phone: {
 //     type: String,
 //     required: true,

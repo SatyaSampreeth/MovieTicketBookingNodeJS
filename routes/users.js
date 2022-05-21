@@ -7,6 +7,7 @@ const passport = require('passport')
 require('../middleware/passport')
 const User = require("../model/user");
 const auth = require("../middleware/auth");
+const Reservation = require("../model/reservation");
 
 router.get("/welcome", auth.verifyToken, (req, res) => {
   res.status(200).send("Welcome 🙌 ");
@@ -120,14 +121,17 @@ router.get('/:id', auth.verifyToken,async(req,res)=>{
 })    
 
 // Update a particular user
-router.put('/:id', auth.enhance,async(req,res)=>{
+router.patch('/:id', auth.enhance,async(req,res)=>{
 
   try{
+
+   const user = await User.findByIdAndUpdate({_id: req.params.id},{role: req.body.role,})
     
-    const user = await User.findById(req.params.id)
-        user.email = req.body.email
-        const u1 = await user.save()
-        res.json(u1)
+    // const user = await User.findById(req.params.id)
+    //     user.email = req.body.email
+    const u1 = await user.save()
+    const a = await User.findById({_id: req.params.id})
+    res.json(a)
   }
   catch(err){
       res.send('error'+err)
@@ -141,7 +145,13 @@ router.delete('/:id', auth.enhance,async(req,res)=>{
     
     const user = await User.findById(req.params.id)
     const role = user.role
-    if (role=='guest') {return res.status(400).send("you cannot delete the user");}
+    const reser =await Reservation.find({userId:req.params.id})
+    for (let item of reser){
+      const reservation = await Reservation.findById(item.id)
+      const u3 = await reservation.delete()
+      console.log(reservation.userId)
+    }
+    // if (role=='guest') {return res.status(400).send("you cannot delete the user");}
     const u1 = await user.delete()
     res.json(user.role)
     // res.status(200).json({
@@ -154,8 +164,22 @@ router.delete('/:id', auth.enhance,async(req,res)=>{
   }
 })
 
+router.put('/edit/:id', auth.enhance,async(req,res)=>{
 
-    // router.put("/logout", auth, function (req, res) {
+  try{
+    const { role } = req.body;
+    const user = await User.findById(req.params.id)
+        user.email = req.body.email
+        const u1 = await user.save()
+        res.json(u1)
+  }
+  catch(err){
+      res.send('error'+err)
+  }
+})   
+
+
+    // router.put("/", auth, function (req, res) {
     //     const authHeader = req.headers["x-access-token"];
     //     jwt.sign(authHeader, "", { expiresIn: 0 } , (logout, err) => {
     //     if (logout) {

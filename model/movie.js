@@ -6,6 +6,10 @@ const movieSchema = new mongoose.Schema({
     required: true,
     lowercase: true,
   },
+  img:{
+    type:String,
+    required:true
+  },
   language: {
     type: String,
     required: true,
