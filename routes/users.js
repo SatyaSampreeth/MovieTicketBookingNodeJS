@@ -81,10 +81,14 @@ router.post("/login", async(req, res) => {
           // Create token
           const token = jwt.sign(
             { user_id: user._id, email },'satya',
-            {expiresIn: "1h",}
+            {expiresIn: "10s",}
           );
+          // const token= jwt.sign({_id:existuser._id , email:existuser.email}, "secretkey", {expiresIn:'20s'})
+          const refreshtoken=jwt.sign({user_id: user._id, email}, "refreshkey", {expiresIn:'1h'})
+          console.log(token,"Accesstoken")
           // save user token
           user.token = token;
+          user.refreshtoken= refreshtoken
           // res.send("Logged")
           // user
           res.status(200).json(user);
@@ -94,6 +98,51 @@ router.post("/login", async(req, res) => {
         console.log(err);
       }
     });
+
+
+    router.post("/renewtoken", async(req,res)=>{
+      const refreshtoken=req.body.refreshtoken
+      // if(!refreshtoken || !refreshtokens.includes(refreshtoken))
+          if(!refreshtoken){
+          return res.json({status:"False",message:"User not Authenticated"})
+      }
+      const decoded =  jwt.verify(refreshtoken,"refreshkey")
+      const user = await User.findById(decoded.user_id)
+      if(decoded.email){
+        let email = decoded.email
+        const token = jwt.sign(
+                  { user_id: decoded.user_id, email },'satya',
+                  {expiresIn: "10s",}
+        );
+        user.token = token;
+        user.refreshtoken=refreshtoken
+        res.json(user)
+      }
+      else{
+        res.send('error'+err)
+      }
+      
+      
+      // , (err,user)=>
+      // {
+      //     if(!err){
+      //       const token = jwt.sign(
+      //         { user_id: user._id, email },'satya',
+      //         {expiresIn: "60s",}
+      //       );
+            
+      //         // const accesstoken= jwt.sign({_id:user._id , email:user.email}, secretkey, {expiresIn:'60s'})
+      //         console.log(token,"renewaccesstoken")
+              // res.json(token)
+      //     }else{
+      //         return res.json({status:"False",message:"User not Authenticated"})
+      //     }
+      // }
+      // )
+      // console.log()
+      
+  })
+
 
 // Get all users
 router.get('/users', auth.enhance,async(req,res)=>{

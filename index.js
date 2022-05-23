@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const cors = require('cors')
 var coreOptions={
-    origin:"http://localhost:4200"
+    // origin:"http://localhost:4200"
+    origin:"http://moviebooking.s3-website.ap-south-1.amazonaws.com/"
 }
 // data base connection
 const mongoose = require('mongoose')

@@ -3,7 +3,8 @@ const User = require("../model/user");
 
 const verifyToken = (req, res, next) => {
   if(!req.headers.authorization){
-    return res.status(401).json('Unauthorized Request')
+    // return res.status(401).json('Unauthorized Request')
+    return res.json({status:"notoken" , data:"Unauthorized request"})
   }
   const token =  req.headers.authorization.split(' ')[1]
   // req.headers["x-access-token"] || ;
@@ -15,8 +16,11 @@ const verifyToken = (req, res, next) => {
     const decoded = jwt.verify(token, 'satya');
     req.userId = decoded.id;
     if(!decoded){
-      return res.status(401).json("A token is required for authentication");
+      // return res.status(401).json("A token is required for authentication");
+      return res.json({status:"error" , data:"Unauthorized request"})
     }
+
+
     // console.log(decoded)
     // if (decoded.exp < Date.now().valueOf() / 1000) { 
     //   return res.status(401).json({ error: "JWT token has expired, please login to obtain a new one" });

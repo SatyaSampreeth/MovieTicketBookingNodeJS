@@ -46,8 +46,8 @@ router.get('/:id',async(req,res)=>{
 }) 
 
 //get movies based on location
-router.get('/:city', auth.verifyToken,async(req,res)=>{
-
+router.get('/all/:city', auth.verifyToken,async(req,res)=>{
+console.log('called')
   try{
     const location = await Location.findOne({city:req.params.city})
     // const movie = await Movie.findOne({title:req.params.title});
