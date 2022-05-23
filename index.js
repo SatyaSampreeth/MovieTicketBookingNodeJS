@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
 const cors = require('cors')
-var coreOptions={
-    // origin:"http://localhost:4200"
-    origin:"http://moviebooking.s3-website.ap-south-1.amazonaws.com/"
-}
+// var coreOptions={
+//     // origin:"http://localhost:4200"
+//     origin:"http://moviebooking.s3-website.ap-south-1.amazonaws.com/"
+// }
 // data base connection
 const mongoose = require('mongoose')
 const url = 'mongodb://localhost/AuthDB'
@@ -16,7 +16,7 @@ con.on('open',()=>{
 })
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cors(coreOptions))
+app.use(cors())
 app.use('/profle',express.static('upload/images'))
 
 const passport = require('passport')
