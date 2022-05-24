@@ -21,7 +21,7 @@ router.post("/register", async (req, res) => {
       // Get user input
       // const role = req.body.role
       // if (role) {return res.status(400).send("you cannot set role property");}
-      const { first_name, last_name, email, password } = req.body;
+      const { first_name, last_name, email, password,role } = req.body;
   
       // Validate user input
       if (!(email && password && first_name && last_name)) {
@@ -45,6 +45,7 @@ router.post("/register", async (req, res) => {
         last_name,
         email: email.toLowerCase(), // sanitize: convert email to lowercase
         password: encryptedPassword,
+        role
       });
   
       // Create token
@@ -81,10 +82,10 @@ router.post("/login", async(req, res) => {
           // Create token
           const token = jwt.sign(
             { user_id: user._id, email },'satya',
-            {expiresIn: "10s",}
+            {expiresIn: "60s",}
           );
           // const token= jwt.sign({_id:existuser._id , email:existuser.email}, "secretkey", {expiresIn:'20s'})
-          const refreshtoken=jwt.sign({user_id: user._id, email}, "refreshkey", {expiresIn:'1h'})
+          const refreshtoken=jwt.sign({user_id: user._id, email}, "refreshkey", {expiresIn:'1y'})
           console.log(token,"Accesstoken")
           // save user token
           user.token = token;
@@ -101,7 +102,8 @@ router.post("/login", async(req, res) => {
 
 
     router.post("/renewtoken", async(req,res)=>{
-      const refreshtoken=req.body.refreshtoken
+      console.log("token is here",req.body)
+      const refreshtoken=req.body.value
       // if(!refreshtoken || !refreshtokens.includes(refreshtoken))
           if(!refreshtoken){
           return res.json({status:"False",message:"User not Authenticated"})
@@ -112,11 +114,12 @@ router.post("/login", async(req, res) => {
         let email = decoded.email
         const token = jwt.sign(
                   { user_id: decoded.user_id, email },'satya',
-                  {expiresIn: "10s",}
+                  {expiresIn: "60s",}
         );
         user.token = token;
         user.refreshtoken=refreshtoken
-        res.json(user)
+
+        res.send({token,refreshtoken})
       }
       else{
         res.send('error'+err)
